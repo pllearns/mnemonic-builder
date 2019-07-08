@@ -1,82 +1,66 @@
 import 'package:flutter/material.dart';
 
-void main() {
-  runApp(MaterialApp(
-    title: 'Navigation Basics',
-    home: MyApp(),
-  ));
-}
+void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Mnemonic Resetter'),
-      ),
-      body: Center(
-        child: RaisedButton(
-          child: Text('Find a bound witness to reset your mnemonic'),
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => MnemonicScanner()),
-            );
-          },
+    final appTitle = 'Form Validation Demo';
+
+    return MaterialApp(
+      title: appTitle,
+      home: Scaffold(
+        appBar: AppBar(
+          title: Text(appTitle),
         ),
+        body: MyCustomForm(),
       ),
     );
   }
 }
 
-class MnemonicScanner extends StatelessWidget {
+// defines form widget
+class MyCustomForm extends StatefulWidget {
   @override
+
+  MyCustomFormState createState() {
+    return MyCustomFormState();
+  }
+}
+
+// defines the corresponding state class, holding data related to form
+class MyCustomFormState extends State<MyCustomForm> {
+  final _formKey = GlobalKey<FormState>();
+
+  @override 
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Find Bound Witnesses")
-      ),
-      body: Column(
+    return Form(
+      key: _formKey, 
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Center(
-            child: RaisedButton(
-              onPressed: () {
-                Navigator.pop(context);
+          TextFormField(
+            validator: (value) {
+              if (value.isEmpty) {
+                  return 'Enter some text';
+                }
+                return null;
               },
-              child: Text("Go back"),
             ),
-          ),
-          Center(
-            child: RaisedButton(
-              child: Text("Scan for Bound Witnesses"),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => Scanner()),
-                );
-              } 
-            )
-          )
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 16.0),
+              child: RaisedButton( 
+                onPressed: () {
+                  if (_formKey.currentState.validate()) {
+                    Scaffold
+                      .of(context)
+                      .showSnackBar(SnackBar(content: Text('Processing Data')));
+                  }
+                },
+                child: Text('Submit'),
+              ),
+            ),
         ],
-      ),
-    );
-  }
-}
-
-class Scanner extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Scanning For Bound Witnesses'),
-      ),
-      body: Center(
-        child: RaisedButton(
-          child: Text('Go back and try again'),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
       ),
     );
   }
